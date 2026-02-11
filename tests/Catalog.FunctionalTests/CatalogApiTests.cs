@@ -392,7 +392,92 @@ public sealed class CatalogApiTests : IClassFixture<CatalogApiFixture>
 
         // Assert - 1
         Assert.Equal(bodyContent.Id, addedItem.Id);
+        Assert.Equal("Test catalog description 1", addedItem.Description);
 
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task AddCatalogItemWithDescriptionExceedingMaxLengthShouldFail(double version)
+    {
+        var _httpClient = CreateHttpClient(new ApiVersion(version));
+
+        var id = version switch {
+            1.0 => 10017,
+            2.0 => 10018,
+            _ => 0
+        };
+
+        // Create a description that exceeds 500 characters
+        var longDescription = new string('a', 501);
+
+        // Act
+        var bodyContent = new CatalogItem("TestCatalog2") {
+            Id = id,
+            Description = longDescription,
+            Price = 100.00m,
+            PictureFileName = null,
+            CatalogTypeId = 1,
+            CatalogType = null,
+            CatalogBrandId = 1,
+            CatalogBrand = null,
+            AvailableStock = 10,
+            RestockThreshold = 5,
+            MaxStockThreshold = 20,
+            OnReorder = false
+        };
+
+        var response = await _httpClient.PostAsJsonAsync("/api/catalog/items", bodyContent, TestContext.Current.CancellationToken);
+
+        // Assert - Should fail with BadRequest due to validation
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData(1.0)]
+    [InlineData(2.0)]
+    public async Task GetCatalogItemWithDescription(double version)
+    {
+        var _httpClient = CreateHttpClient(new ApiVersion(version));
+
+        // First, create an item with a description
+        var id = version switch {
+            1.0 => 10019,
+            2.0 => 10020,
+            _ => 0
+        };
+
+        var testDescription = "This is a test description for the catalog item";
+        var bodyContent = new CatalogItem("TestCatalogWithDescription") {
+            Id = id,
+            Description = testDescription,
+            Price = 50.00m,
+            PictureFileName = null,
+            CatalogTypeId = 1,
+            CatalogType = null,
+            CatalogBrandId = 1,
+            CatalogBrand = null,
+            AvailableStock = 10,
+            RestockThreshold = 5,
+            MaxStockThreshold = 20,
+            OnReorder = false
+        };
+
+        var createResponse = await _httpClient.PostAsJsonAsync("/api/catalog/items", bodyContent, TestContext.Current.CancellationToken);
+        createResponse.EnsureSuccessStatusCode();
+
+        // Act - Get the item
+        var response = await _httpClient.GetAsync($"/api/catalog/items/{id}", TestContext.Current.CancellationToken);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        var result = JsonSerializer.Deserialize<CatalogItem>(body, _jsonSerializerOptions);
+
+        Assert.Equal(id, result.Id);
+        Assert.NotNull(result.Description);
+        Assert.Equal(testDescription, result.Description);
     }
 
     [Theory]

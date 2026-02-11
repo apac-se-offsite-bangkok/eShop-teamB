@@ -11,6 +11,7 @@ public class CatalogItem
     [Required]
     public string Name { get; set; }
 
+    [MaxLength(500)]
     public string? Description { get; set; }
 
     public decimal Price { get; set; }

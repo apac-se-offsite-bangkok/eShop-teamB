@@ -926,6 +926,7 @@
             "type": "string"
           },
           "description": {
+            "maxLength": 500,
             "type": [
               "null",
               "string"
