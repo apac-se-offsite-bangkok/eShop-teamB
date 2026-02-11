@@ -129,6 +129,32 @@ Notes:
   - Report any issues to [azure-dev](https://github.com/Azure/azure-dev/issues) repo.
   - [FAQ and troubleshoot](https://learn.microsoft.com/azure/developer/azure-developer-cli/troubleshoot?tabs=Browser) for azd.
 
+## End-to-End Testing
+
+The repository includes Playwright-based end-to-end tests to verify application functionality. To run the E2E tests, you'll need to configure authentication credentials.
+
+### Quick Start for E2E Tests
+
+1. Copy the environment template file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` and set your test credentials:
+   ```bash
+   E2E_USERNAME=demouser@microsoft.com
+   E2E_PASSWORD=Pass@word1
+   ```
+
+3. Install Playwright and run tests:
+   ```bash
+   npm install
+   npx playwright install
+   npx playwright test
+   ```
+
+For detailed information about E2E testing, including test structure and troubleshooting, see the [E2E Testing Guide](./e2e/README.md).
+
 ## Contributing
 
 For more information on contributing to this repo, read [the contribution documentation](./CONTRIBUTING.md) and [the Code of Conduct](CODE-OF-CONDUCT.md).
