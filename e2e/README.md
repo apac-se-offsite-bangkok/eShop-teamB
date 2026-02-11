@@ -54,9 +54,13 @@ set E2E_PASSWORD=your-secure-password
 
 #### Option 3: CI/CD Environment
 
-For CI/CD pipelines, configure these as secrets in your CI system:
-- GitHub Actions: Add as repository secrets
-- Azure Pipelines: Add as pipeline variables (marked as secret)
+For CI/CD pipelines, configure these as secrets in your CI system. Examples:
+- **GitHub Actions**: Add as repository secrets
+- **Azure Pipelines**: Add as pipeline variables (marked as secret)
+- **GitLab CI**: Add as protected variables in project settings
+- **Jenkins**: Use credentials plugin or environment variables
+
+> **Note**: Most CI/CD platforms follow similar patterns for managing secrets. Consult your platform's documentation for specific instructions on securely storing environment variables.
 
 ## Running the Tests
 
