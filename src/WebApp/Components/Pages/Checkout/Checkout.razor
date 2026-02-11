@@ -51,6 +51,35 @@
                 </div>
             </div>
             <div class="form-section">
+                <h2>Payment Information</h2>
+                <label>
+                    Card Number
+                    <InputText @bind-Value="@Info.CardNumber" placeholder="1234 5678 9012 3456" />
+                    <ValidationMessage For="@(() => Info.CardNumber)" />
+                </label>
+                <label>
+                    Cardholder Name
+                    <InputText @bind-Value="@Info.CardHolderName" placeholder="Name on card" />
+                    <ValidationMessage For="@(() => Info.CardHolderName)" />
+                </label>
+                <div class="form-group">
+                    <div class="form-group-item">
+                        <label>
+                            Expiration (MM/YY)
+                            <InputText @bind-Value="@expiryInput" @bind-Value:after="ParseExpiry" placeholder="MM/YY" />
+                            <ValidationMessage For="@(() => Info.CardExpiration)" />
+                        </label>
+                    </div>
+                    <div class="form-group-item">
+                        <label>
+                            CVV
+                            <InputText @bind-Value="@Info.CardSecurityNumber" placeholder="123" />
+                            <ValidationMessage For="@(() => Info.CardSecurityNumber)" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
                 <div class="form-buttons">
                     <a href="cart" class="button button-secondary"><img role="presentation" src="icons/arrow-left.svg" />Back to the shopping bag</a>
                     <button class="button button-primary" type="submit">Place order</button>
@@ -64,6 +93,7 @@
 @code {
     private EditContext editContext = default!;
     private ValidationMessageStore extraMessages = default!;
+    private string expiryInput = "";
 
     [SupplyParameterFromForm]
     public BasketCheckoutInfo Info { get; set; } = default!;
@@ -122,6 +152,19 @@
         if ((await Basket.GetBasketItemsAsync()).Count == 0)
         {
             extraMessages.Add(new FieldIdentifier(Info, ""), "Your cart is empty");
+        }
+    }
+
+    private void ParseExpiry()
+    {
+        if (!string.IsNullOrEmpty(expiryInput) && expiryInput.Contains('/'))
+        {
+            var parts = expiryInput.Split('/');
+            if (parts.Length == 2 && int.TryParse(parts[0], out var month) && int.TryParse(parts[1], out var year))
+            {
+                var fullYear = year < 100 ? 2000 + year : year;
+                Info.CardExpiration = new DateTime(fullYear, month, 1).ToUniversalTime();
+            }
         }
     }
 

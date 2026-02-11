@@ -88,6 +88,9 @@ public class BasketState(
         // Get details for the items in the basket
         var orderItems = await FetchBasketItemsAsync();
 
+        // Extract payment details - must come from user input for security
+        var (ccNum, ccHolder, ccExpiry, ccCvv) = ExtractPaymentDetails(checkoutInfo);
+
         // Call into Ordering.API to create the order using those details
         var request = new CreateOrderRequest(
             UserId: buyerId,
@@ -97,15 +100,32 @@ public class BasketState(
             State: checkoutInfo.State!,
             Country: checkoutInfo.Country!,
             ZipCode: checkoutInfo.ZipCode!,
-            CardNumber: "1111222233334444",
-            CardHolderName: "TESTUSER",
-            CardExpiration: DateTime.UtcNow.AddYears(1),
-            CardSecurityNumber: "111",
+            CardNumber: ccNum,
+            CardHolderName: ccHolder,
+            CardExpiration: ccExpiry,
+            CardSecurityNumber: ccCvv,
             CardTypeId: checkoutInfo.CardTypeId,
             Buyer: buyerId,
             Items: [.. orderItems]);
         await orderingService.CreateOrder(request, checkoutInfo.RequestId);
         await DeleteBasketAsync();
+    }
+
+    private static (string number, string holder, DateTime expiry, string cvv) ExtractPaymentDetails(BasketCheckoutInfo info)
+    {
+        // Security guard: Prevent using default/null payment data
+        var ccNumber = info.CardNumber;
+        var ccName = info.CardHolderName;
+        var ccExp = info.CardExpiration;
+        var ccCode = info.CardSecurityNumber;
+
+        if (string.IsNullOrEmpty(ccNumber) || string.IsNullOrEmpty(ccName) || 
+            string.IsNullOrEmpty(ccCode) || ccExp == null)
+        {
+            throw new InvalidOperationException("Payment details missing - must be provided via secure user input");
+        }
+
+        return (ccNumber, ccName, ccExp.Value, ccCode);
     }
 
     private Task NotifyChangeSubscribersAsync()
