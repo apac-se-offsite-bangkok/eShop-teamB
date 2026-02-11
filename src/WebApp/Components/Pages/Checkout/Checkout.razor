@@ -54,7 +54,7 @@
                 <h2>Payment Information</h2>
                 <label>
                     Card Number
-                    <InputText @bind-Value="@Info.CardNumber" placeholder="1234 5678 9012 3456" />
+                    <InputText @bind-Value="@Info.CardNumber" placeholder="1234 5678 9012 3456" maxlength="19" />
                     <ValidationMessage For="@(() => Info.CardNumber)" />
                 </label>
                 <label>
@@ -73,7 +73,7 @@
                     <div class="form-group-item">
                         <label>
                             CVV
-                            <InputText @bind-Value="@Info.CardSecurityNumber" placeholder="123" />
+                            <InputText @bind-Value="@Info.CardSecurityNumber" placeholder="123" maxlength="4" type="password" />
                             <ValidationMessage For="@(() => Info.CardSecurityNumber)" />
                         </label>
                     </div>
@@ -162,8 +162,11 @@
             var parts = expiryInput.Split('/');
             if (parts.Length == 2 && int.TryParse(parts[0], out var month) && int.TryParse(parts[1], out var year))
             {
-                var fullYear = year < 100 ? 2000 + year : year;
-                Info.CardExpiration = new DateTime(fullYear, month, 1).ToUniversalTime();
+                if (month >= 1 && month <= 12)
+                {
+                    var fullYear = year < 100 ? 2000 + year : year;
+                    Info.CardExpiration = new DateTime(fullYear, month, 1).ToUniversalTime();
+                }
             }
         }
     }
