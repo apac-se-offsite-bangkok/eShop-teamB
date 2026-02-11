@@ -142,8 +142,8 @@ The repository includes Playwright-based end-to-end tests to verify application 
 
 2. Edit `.env` and set your test credentials:
    ```bash
-   E2E_USERNAME=demouser@microsoft.com
-   E2E_PASSWORD=Pass@word1
+   E2E_USERNAME=your-test-username@example.com
+   E2E_PASSWORD=your-secure-password
    ```
 
 3. Install Playwright and run tests:

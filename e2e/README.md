@@ -16,8 +16,8 @@ The E2E tests require authentication credentials to test login functionality. Th
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `E2E_USERNAME` | Username for test authentication | `demouser@microsoft.com` |
-| `E2E_PASSWORD` | Password for test authentication | `Pass@word1` |
+| `E2E_USERNAME` | Username for test authentication | `your-test-username@example.com` |
+| `E2E_PASSWORD` | Password for test authentication | `your-secure-password` |
 
 ### Setting Environment Variables
 
@@ -26,8 +26,8 @@ The E2E tests require authentication credentials to test login functionality. Th
 Create a `.env` file in the root directory of the project:
 
 ```bash
-E2E_USERNAME=demouser@microsoft.com
-E2E_PASSWORD=Pass@word1
+E2E_USERNAME=your-test-username@example.com
+E2E_PASSWORD=your-secure-password
 ```
 
 The `.env` file is automatically loaded by the Playwright configuration and is excluded from version control.
@@ -36,20 +36,20 @@ The `.env` file is automatically loaded by the Playwright configuration and is e
 
 For Unix-based systems (Linux/macOS):
 ```bash
-export E2E_USERNAME=demouser@microsoft.com
-export E2E_PASSWORD=Pass@word1
+export E2E_USERNAME=your-test-username@example.com
+export E2E_PASSWORD=your-secure-password
 ```
 
 For Windows PowerShell:
 ```powershell
-$env:E2E_USERNAME="demouser@microsoft.com"
-$env:E2E_PASSWORD="Pass@word1"
+$env:E2E_USERNAME="your-test-username@example.com"
+$env:E2E_PASSWORD="your-secure-password"
 ```
 
 For Windows Command Prompt:
 ```cmd
-set E2E_USERNAME=demouser@microsoft.com
-set E2E_PASSWORD=Pass@word1
+set E2E_USERNAME=your-test-username@example.com
+set E2E_PASSWORD=your-secure-password
 ```
 
 #### Option 3: CI/CD Environment
